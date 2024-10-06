@@ -1,7 +1,7 @@
 from subprocess import run
 from node_generator import generate
 
-SO = "so"
+SO = "dll"
 
 def build_main_lib():
     print(" -- building main libraries")
@@ -30,7 +30,8 @@ def build_lang(native_name, cs_name, *files):
         "-shared",
         "-o", f"{dotnet_dir}/tree-sitter-{native_name}.{SO}",
         *[f"{native_dir}/{file}" for file in files],
-        f"-I{native_name}"
+        f"-I{native_name}",
+        "-Itree-sitter/lib/include"
     ], check=True)
 
     print("    -- generating support code")
@@ -47,6 +48,7 @@ def main():
     build_lang("c", "C", "parser.c")
     build_lang("javascript", "JavaScript", "parser.c", "scanner.c")
     build_lang("python", "Python", "parser.c", "scanner.cc")
+    build_lang("ndf", "Ndf", "parser.c", "scanner.c")
     build_managed()
 
 
